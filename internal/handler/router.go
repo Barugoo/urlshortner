@@ -33,7 +33,7 @@ func requestsHandler(res http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		url, err := service.Get(id)
+		url, err := service.GetURL(id)
 		if err != nil {
 			http.Error(res, "URL not found", http.StatusNotFound)
 			return

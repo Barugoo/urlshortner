@@ -17,7 +17,7 @@ func CreateShortURL(url string) string {
 	return shortID
 }
 
-func Get(id string) (string, error) {
+func GetURL(id string) (string, error) {
 	url, exists := urlStorage[id]
 	if !exists {
 		return "", errors.New("url not found")
