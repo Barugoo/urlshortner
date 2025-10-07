@@ -21,10 +21,10 @@ func requestsHandler(res http.ResponseWriter, req *http.Request) {
 
 		url := string(body)
 
-		shortened := service.CreateShortUrl(url)
-		fullUrl := fmt.Sprintf("http://%s/%s", req.Host, shortened)
+		shortened := service.CreateShortURL(url)
+		fullURL := fmt.Sprintf("http://%s/%s", req.Host, shortened)
 		res.WriteHeader(http.StatusCreated)
-		res.Write([]byte(fullUrl))
+		res.Write([]byte(fullURL))
 	case http.MethodGet:
 		id := strings.TrimPrefix(req.URL.Path, "/")
 

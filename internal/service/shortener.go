@@ -9,12 +9,12 @@ import (
 
 var urlStorage = make(map[string]string)
 
-func CreateShortUrl(url string) string {
-	shortId := generateShortId(url)
+func CreateShortURL(url string) string {
+	shortID := generateShortID(url)
 
-	urlStorage[shortId] = url
+	urlStorage[shortID] = url
 
-	return shortId
+	return shortID
 }
 
 func Get(id string) (string, error) {
@@ -26,15 +26,15 @@ func Get(id string) (string, error) {
 	return url, nil
 }
 
-func generateShortId(originalUrl string) string {
+func generateShortID(originalURL string) string {
 
 	for id, url := range urlStorage {
-		if url == originalUrl {
+		if url == originalURL {
 			return id
 		}
 	}
 
-	hash := sha256.Sum256([]byte(originalUrl))
+	hash := sha256.Sum256([]byte(originalURL))
 	shortID := base64.URLEncoding.EncodeToString(hash[:8])
 	return strings.TrimRight(shortID, "=")
 }
