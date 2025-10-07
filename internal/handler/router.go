@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -10,15 +11,20 @@ import (
 func requestsHandler(res http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodPost:
-		url := req.FormValue("url")
+		body := make([]byte, req.ContentLength)
 
-		if url == "" {
-			http.Error(res, "URL couldn't be empty", http.StatusBadRequest)
+		_, err := req.Body.Read(body)
+		if err != nil && err.Error() != "EOF" {
+			http.Error(res, "Bad request", http.StatusBadRequest)
+			return
 		}
 
+		url := string(body)
+
 		shortened := service.CreateShortUrl(url)
+		fullUrl := fmt.Sprintf("http://%s/%s", req.Host, shortened)
 		res.WriteHeader(http.StatusCreated)
-		res.Write([]byte(shortened))
+		res.Write([]byte(fullUrl))
 	case http.MethodGet:
 		id := strings.TrimPrefix(req.URL.Path, "/")
 
@@ -33,8 +39,8 @@ func requestsHandler(res http.ResponseWriter, req *http.Request) {
 			return
 		}
 
+		res.Header().Add("Location", url)
 		res.WriteHeader(http.StatusTemporaryRedirect)
-		res.Write([]byte(url))
 	default:
 		http.Error(res, "Method not allowed", http.StatusMethodNotAllowed)
 	}
