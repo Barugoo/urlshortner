@@ -23,6 +23,7 @@ func requestsHandler(res http.ResponseWriter, req *http.Request) {
 
 		shortened := service.CreateShortURL(url)
 		fullURL := fmt.Sprintf("http://%s/%s", req.Host, shortened)
+		res.Header().Set("Content-Type", "text/plain")
 		res.WriteHeader(http.StatusCreated)
 		res.Write([]byte(fullURL))
 	case http.MethodGet:
