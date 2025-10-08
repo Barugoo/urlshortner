@@ -13,7 +13,7 @@ func TestHandlerPOSTSuccess(t *testing.T) {
 
 	recorder := httptest.NewRecorder()
 
-	requestsHandler(recorder, req)
+	handleCreateLink(recorder, req)
 
 	if recorder.Code != http.StatusCreated {
 		t.Errorf("handler returned wrong status code: got %v want %v", recorder.Code, http.StatusCreated)
@@ -35,7 +35,7 @@ func TestHandlerGETNotFound(t *testing.T) {
 
 	recorder := httptest.NewRecorder()
 
-	requestsHandler(recorder, req)
+	handleGetLink(recorder, req)
 
 	if recorder.Code != http.StatusNotFound {
 		t.Errorf("handler returned wrong status code: got %v want %v", recorder.Code, http.StatusNotFound)
