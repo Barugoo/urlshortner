@@ -30,14 +30,16 @@ func testRequest(t *testing.T, ts *httptest.Server, method string, path string, 
 func TestRouter(t *testing.T) {
 	ts := httptest.NewServer(handler.MakeHandler())
 	defer ts.Close()
-	originalUrl := "https://ya.ru"
+	originalURL := "https://ya.ru"
 
-	resp, get := testRequest(t, ts, "POST", "", strings.NewReader(originalUrl))
+	resp, get := testRequest(t, ts, "POST", "", strings.NewReader(originalURL))
+	defer resp.Body.Close()
 	code := strings.Replace(get, ts.URL+"/", "", -1)
 	assert.Equal(t, http.StatusCreated, resp.StatusCode)
-	assert.Equal(t, service.CreateShortURL(originalUrl), code)
+	assert.Equal(t, service.CreateShortURL(originalURL), code)
 
 	shortenedCode := strings.Replace(get, ts.URL, "", -1)
 	getResp, _ := testRequest(t, ts, "GET", shortenedCode, nil)
+	getResp.Body.Close()
 	assert.Equal(t, http.StatusOK, getResp.StatusCode) // status code from destination URL on which script is redirected
 }
