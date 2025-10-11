@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/vsevolod-ryzhov/urlshortner.git/internal/config"
 	"github.com/vsevolod-ryzhov/urlshortner.git/internal/service"
 )
 
@@ -21,7 +22,7 @@ func handleCreateLink(res http.ResponseWriter, req *http.Request) {
 	url := string(body)
 
 	shortened := service.CreateShortURL(url)
-	shortenedURL := fmt.Sprintf("http://%s/%s", req.Host, shortened)
+	shortenedURL := fmt.Sprintf("%s/%s", config.Options.ShortenedBaseURL, shortened)
 	res.Header().Set("Content-Type", "text/plain")
 	res.WriteHeader(http.StatusCreated)
 	res.Write([]byte(shortenedURL))

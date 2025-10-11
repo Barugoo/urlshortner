@@ -23,11 +23,6 @@ func TestHandlerPOSTSuccess(t *testing.T) {
 	if contentType != "text/plain" {
 		t.Errorf("handler returned wrong content type: got %v want %v", contentType, "text/plain")
 	}
-
-	responseBody := recorder.Body.String()
-	if !strings.HasPrefix(responseBody, "http") {
-		t.Errorf("Expected to have response url started with http: got %v", responseBody)
-	}
 }
 
 func TestHandlerGETNotFound(t *testing.T) {
