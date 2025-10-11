@@ -36,11 +36,11 @@ func TestRouter(t *testing.T) {
 
 	resp, get := testRequest(t, ts, "POST", "/", strings.NewReader(originalURL))
 	defer resp.Body.Close()
-	code := strings.TrimPrefix(get, config.Options.ShortenedBaseURL+"/")
+	code := strings.TrimPrefix(get, "http://"+config.Options.ShortenedBaseURL+"/")
 	assert.Equal(t, http.StatusCreated, resp.StatusCode)
 	assert.Equal(t, service.CreateShortURL(originalURL), code)
 
-	shortenedCode := strings.TrimPrefix(get, config.Options.ShortenedBaseURL+"/")
+	shortenedCode := strings.TrimPrefix(get, "http://"+config.Options.ShortenedBaseURL+"/")
 	getResp, _ := testRequest(t, ts, "GET", "/"+shortenedCode, nil)
 	getResp.Body.Close()
 	assert.Equal(t, http.StatusOK, getResp.StatusCode) // status code from destination URL on which script is redirected

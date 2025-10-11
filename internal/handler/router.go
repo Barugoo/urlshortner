@@ -22,7 +22,12 @@ func handleCreateLink(res http.ResponseWriter, req *http.Request) {
 	url := string(body)
 
 	shortened := service.CreateShortURL(url)
-	shortenedURL := fmt.Sprintf("%s/%s", config.Options.ShortenedBaseURL, shortened)
+	baseURL := config.Options.ShortenedBaseURL
+	if !strings.HasPrefix(baseURL, "http://") && !strings.HasPrefix(baseURL, "https://") {
+		baseURL = "http://" + baseURL
+	}
+	shortenedURL := fmt.Sprintf("%s/%s", strings.TrimSuffix(baseURL, "/"), shortened)
+
 	res.Header().Set("Content-Type", "text/plain")
 	res.WriteHeader(http.StatusCreated)
 	res.Write([]byte(shortenedURL))
