@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -43,7 +44,11 @@ func handleGetLink(res http.ResponseWriter, req *http.Request) {
 
 	url, err := service.GetURL(id)
 	if err != nil {
-		http.Error(res, "URL not found", http.StatusNotFound)
+		if errors.Is(err, service.ErrNotFound) {
+			http.Error(res, "URL not found", http.StatusNotFound)
+		} else {
+			http.Error(res, err.Error(), http.StatusInternalServerError)
+		}
 		return
 	}
 	res.Header().Add("Location", url)
