@@ -1,0 +1,51 @@
+package service
+
+import (
+	"crypto/sha256"
+	"encoding/base64"
+	"errors"
+	"strings"
+	"sync"
+)
+
+var (
+	ErrNotFound = errors.New("URL not found")
+	urlStorage  = make(map[string]string)
+	mutex       sync.RWMutex
+)
+
+func CreateShortURL(url string) string {
+	shortID := generateShortID(url)
+
+	mutex.Lock()
+	urlStorage[shortID] = url
+	mutex.Unlock()
+
+	return shortID
+}
+
+func GetURL(id string) (string, error) {
+	mutex.RLock()
+	url, exists := urlStorage[id]
+	mutex.RUnlock()
+
+	if !exists {
+		return "", ErrNotFound
+	}
+
+	return url, nil
+}
+
+func generateShortID(originalURL string) string {
+	mutex.RLock()
+	id, ok := urlStorage[originalURL]
+	if ok {
+		mutex.RUnlock()
+		return id
+	}
+	mutex.RUnlock()
+
+	hash := sha256.Sum256([]byte(originalURL))
+	shortID := base64.URLEncoding.EncodeToString(hash[:8])
+	return strings.TrimRight(shortID, "=")
+}
