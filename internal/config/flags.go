@@ -18,7 +18,7 @@ func ParseFlags() {
 	if envRunAddr := os.Getenv("SERVER_ADDRESS"); envRunAddr != "" {
 		Options.AppPort = envRunAddr
 	}
-	if envBaseUrl := os.Getenv("BASE_URL"); envBaseUrl != "" {
-		Options.ShortenedBaseURL = envBaseUrl
+	if envBaseURL := os.Getenv("BASE_URL"); envBaseURL != "" {
+		Options.ShortenedBaseURL = envBaseURL
 	}
 }
