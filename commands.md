@@ -1,9 +1,10 @@
 ## Tests
-1. go test ./...
-2. shortenertest_v2-darwin-arm64 -test.v -test.run=^TestIteration1$ -binary-path=cmd/shortener/shortener
-3. shortenertest_v2-darwin-arm64 -test.v -test.run=^TestIteration2$ -source-path=.
-4. shortenertest_v2-darwin-arm64 -test.v -test.run=^TestIteration3$ -source-path=.
-5. shortenertest_v2-darwin-arm64 -test.v -test.run=^TestIteration4$ -binary-path=cmd/shortener/shortener -server-port=8088
+- go test ./...
+1. shortenertest_v2-darwin-arm64 -test.v -test.run=^TestIteration1$ -binary-path=cmd/shortener/shortener
+2. shortenertest_v2-darwin-arm64 -test.v -test.run=^TestIteration2$ -source-path=.
+3. shortenertest_v2-darwin-arm64 -test.v -test.run=^TestIteration3$ -source-path=.
+4. shortenertest_v2-darwin-arm64 -test.v -test.run=^TestIteration4$ -binary-path=cmd/shortener/shortener -server-port=8088
+5. shortenertest_v2-darwin-arm64 -test.v -test.run=^TestIteration5$ -binary-path=cmd/shortener/shortener -server-port=8080
 
 ## Misc
 - go build -o shortener *.go

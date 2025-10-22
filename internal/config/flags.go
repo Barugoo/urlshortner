@@ -2,6 +2,7 @@ package config
 
 import (
 	"flag"
+	"os"
 )
 
 var Options struct {
@@ -13,4 +14,11 @@ func ParseFlags() {
 	flag.StringVar(&Options.AppPort, "a", "localhost:8080", "The address to bind the app to")
 	flag.StringVar(&Options.ShortenedBaseURL, "b", "localhost:8080", "The base url of shortened")
 	flag.Parse()
+
+	if envRunAddr := os.Getenv("SERVER_ADDRESS"); envRunAddr != "" {
+		Options.AppPort = envRunAddr
+	}
+	if envBaseUrl := os.Getenv("BASE_URL"); envBaseUrl != "" {
+		Options.ShortenedBaseURL = envBaseUrl
+	}
 }
