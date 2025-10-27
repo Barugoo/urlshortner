@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -8,16 +9,30 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/vsevolod-ryzhov/urlshortner.git/internal/config"
+	"github.com/vsevolod-ryzhov/urlshortner.git/internal/logger"
+	"github.com/vsevolod-ryzhov/urlshortner.git/internal/model"
 	"github.com/vsevolod-ryzhov/urlshortner.git/internal/service"
+	"go.uber.org/zap"
 )
 
 func handleCreateLink(res http.ResponseWriter, req *http.Request) {
 	body := make([]byte, req.ContentLength)
 
-	_, err := req.Body.Read(body)
-	if err != nil && err.Error() != "EOF" {
-		http.Error(res, "Bad request", http.StatusBadRequest)
-		return
+	if req.Header.Get("Content-Type") == "application/json" {
+		var requestModel model.JsonRequest
+		dec := json.NewDecoder(req.Body)
+		if err := dec.Decode(&requestModel); err != nil {
+			logger.Log.Debug("cannot decode request JSON body", zap.Error(err))
+			res.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		body = []byte(requestModel.Url)
+	} else {
+		_, err := req.Body.Read(body)
+		if err != nil && err.Error() != "EOF" {
+			http.Error(res, "Bad request", http.StatusBadRequest)
+			return
+		}
 	}
 
 	url := string(body)
@@ -29,9 +44,23 @@ func handleCreateLink(res http.ResponseWriter, req *http.Request) {
 	}
 	shortenedURL := fmt.Sprintf("%s/%s", strings.TrimSuffix(baseURL, "/"), shortened)
 
-	res.Header().Set("Content-Type", "text/plain")
-	res.WriteHeader(http.StatusCreated)
-	res.Write([]byte(shortenedURL))
+	if req.Header.Get("Content-Type") == "application/json" {
+		resp := model.JsonResponse{
+			Result: shortenedURL,
+		}
+		res.Header().Set("Content-Type", "application/json")
+		res.WriteHeader(http.StatusCreated)
+
+		enc := json.NewEncoder(res)
+		if err := enc.Encode(resp); err != nil {
+			logger.Log.Debug("error encoding response", zap.Error(err))
+			return
+		}
+	} else {
+		res.Header().Set("Content-Type", "text/plain")
+		res.WriteHeader(http.StatusCreated)
+		res.Write([]byte(shortenedURL))
+	}
 }
 
 func handleGetLink(res http.ResponseWriter, req *http.Request) {
@@ -59,6 +88,7 @@ func MakeHandler() *chi.Mux {
 	r := chi.NewRouter()
 	r.Get("/{link}", handleGetLink)
 	r.Post("/", handleCreateLink)
+	r.Post("/api/shorten", handleCreateLink)
 
 	return r
 }
