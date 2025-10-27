@@ -19,14 +19,14 @@ func handleCreateLink(res http.ResponseWriter, req *http.Request) {
 	body := make([]byte, req.ContentLength)
 
 	if req.Header.Get("Content-Type") == "application/json" {
-		var requestModel model.JsonRequest
+		var requestModel model.JSONRequest
 		dec := json.NewDecoder(req.Body)
 		if err := dec.Decode(&requestModel); err != nil {
 			logger.Log.Debug("cannot decode request JSON body", zap.Error(err))
 			res.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		body = []byte(requestModel.Url)
+		body = []byte(requestModel.URL)
 	} else {
 		_, err := req.Body.Read(body)
 		if err != nil && err.Error() != "EOF" {
@@ -45,7 +45,7 @@ func handleCreateLink(res http.ResponseWriter, req *http.Request) {
 	shortenedURL := fmt.Sprintf("%s/%s", strings.TrimSuffix(baseURL, "/"), shortened)
 
 	if req.Header.Get("Content-Type") == "application/json" {
-		resp := model.JsonResponse{
+		resp := model.JSONResponse{
 			Result: shortenedURL,
 		}
 		res.Header().Set("Content-Type", "application/json")
@@ -59,7 +59,10 @@ func handleCreateLink(res http.ResponseWriter, req *http.Request) {
 	} else {
 		res.Header().Set("Content-Type", "text/plain")
 		res.WriteHeader(http.StatusCreated)
-		res.Write([]byte(shortenedURL))
+		_, err := res.Write([]byte(shortenedURL))
+		if err != nil {
+			return
+		}
 	}
 }
 

@@ -30,7 +30,7 @@ func TestHandlerPOSTSuccess(t *testing.T) {
 }
 
 func TestHandlerPOSTJsonSuccess(t *testing.T) {
-	requestModel := model.JsonRequest{Url: "https://ya.ru"}
+	requestModel := model.JSONRequest{URL: "https://ya.ru"}
 
 	var buf bytes.Buffer
 	err := json.NewEncoder(&buf).Encode(requestModel)

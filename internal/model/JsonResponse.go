@@ -1,5 +1,5 @@
 package model
 
-type JsonResponse struct {
+type JSONResponse struct {
 	Result string `json:"result"`
 }
