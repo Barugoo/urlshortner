@@ -18,7 +18,7 @@ func main() {
 
 	srv := &http.Server{
 		Addr:         config.Options.AppPort,
-		Handler:      logger.WithLogging(handler.MakeHandler()),
+		Handler:      logger.WithLogging(handler.GzipMiddleware(handler.MakeHandler())),
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}

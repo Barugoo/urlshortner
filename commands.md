@@ -7,6 +7,7 @@
 5. shortenertest_v2-darwin-arm64 -test.v -test.run=^TestIteration5$ -binary-path=cmd/shortener/shortener -server-port=8080
 6. shortenertest_v2-darwin-arm64 -test.v -test.run=^TestIteration6$ -source-path=.
 7. shortenertest_v2-darwin-arm64 -test.v -test.run=^TestIteration7$ -binary-path=cmd/shortener/shortener -source-path=.
+8. shortenertest_v2-darwin-arm64 -test.v -test.run=^TestIteration8$ -binary-path=cmd/shortener/shortener
 
 ## Misc
 - go build -o cmd/shortener/shortener cmd/shortener/*.go

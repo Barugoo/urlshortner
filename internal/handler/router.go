@@ -83,8 +83,8 @@ func handleGetLink(res http.ResponseWriter, req *http.Request) {
 		}
 		return
 	}
-	res.Header().Add("Location", url)
-	res.WriteHeader(http.StatusTemporaryRedirect)
+
+	http.Redirect(res, req, url, http.StatusTemporaryRedirect)
 }
 
 func MakeHandler() *chi.Mux {
